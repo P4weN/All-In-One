@@ -16,6 +16,7 @@
             height: 100vh;
             background-color: #0e0e0e;
             margin: 0;
+            animation: animation2 1s ease 0s 1 normal forwards;
         }
         .container {
             background: #0e0e0e;
@@ -79,6 +80,16 @@
             justify-content: center;
         }
     </style>
+
+    @keyframes animation2 {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}   
 </head>
 <body>
     <button class="back-button" onclick="window.location.href='MojaStrona.html'">Wstecz</button>
