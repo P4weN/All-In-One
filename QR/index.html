@@ -70,45 +70,42 @@
         }
 
         .back-button {
-        all: unset;
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        background-color: #bc8400;
-        color: #0e0e0e;
-        padding: 10px 20px;
-        font-size: 18px;
-        border-radius: 5px;
-        cursor: pointer;
-        border: none;
-        transition: all 0.3s ease;
-        font-family: Arial, sans-serif;
-        text-align: center;
-    }
+            all: unset;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #bc8400;
+            color: #0e0e0e;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
 
-    .back-button:hover {
-        background-color: #0e0e0e;
-        color: #bc8400;
-        transform: scale(1.1);
-        border: 2px solid #bc8400;
-    }
-
+        .back-button:hover {
+            background-color: #0e0e0e;
+            color: #bc8400;
+            transform: scale(1.1);
+            border: 2px solid #bc8400;
+        }
 
         #qrcode {
             margin-top: 35px;
-            height: 200px;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: white;
-            padding: 20px;          
-            border-radius: 10px;
+            background-color: transparent;
+            padding: 0;
         }
 
         #downloadBtn {
             background-color: #28a745;
             color: black;
-    }
+        }
 
         @keyframes animation2 {
             0% { opacity: 0; }
@@ -143,7 +140,15 @@
                 return;
             }
 
-            qrCode = new QRCode(qrContainer, {
+            // Stwórz biały wrapper (ramkę)
+            const wrapper = document.createElement("div");
+            wrapper.style.backgroundColor = "white";
+            wrapper.style.padding = "20px";
+            wrapper.style.borderRadius = "10px";
+
+            qrContainer.appendChild(wrapper);
+
+            new QRCode(wrapper, {
                 text: text,
                 width: 200,
                 height: 200,
@@ -179,4 +184,3 @@
     </script>
 </body>
 </html>
-
