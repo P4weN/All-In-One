@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Paweł">
+    <title>Generator Haseł</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #0e0e0e; 
+            margin: 0;
+            animation: animation2 1s ease 0s 1 normal forwards;
+        }
+        .container {
+            background: #0e0e0e; 
+            padding: 30px; 
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border: 5px solid #bc8400; 
+            width: 340px;
+            height: 440px;
+            display: flex;
+            flex-direction: column; 
+            justify-content: space-between; 
+
+        }
+
+        h2, label, p {
+            color: #bc8400; 
+        }
+        input[type="number"] {
+            color: #bc8400; 
+            background-color: transparent; 
+            border: 3px solid #bc8400; 
+            padding: 5px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            border: none;
+            background: #007bff; 
+            color: #0e0e0e;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: transform 0.3s ease; 
+        }
+        button:hover {
+            transform: translateY(-10px); 
+        }
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        #password {
+            color: #bc8400; 
+            word-wrap: break-word; 
+            white-space: pre-wrap; 
+            max-width: 100%; 
+            overflow-wrap: break-word; 
+            word-break: break-all; 
+            overflow-y: auto; 
+            margin-top: 15px; 
+            flex-grow: 1; 
+            max-height: none; 
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #bc8400;
+            color: #0e0e0e;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #0e0e0e;
+            color: #bc8400;
+            transform: scale(1.1);
+            border: 2px solid #bc8400;
+        }
+
+        @keyframes animation2 {
+        0% {
+            opacity: 0;
+        }
+    
+        100% {
+            opacity: 1;
+        }
+    }
+    </style>
+</head>
+<body>
+    
+    <button class="back-button" onclick="window.location.href='https://p4wen.github.io/All-In-One/'">Wstecz</button>
+
+    <div class="container">
+        <h2>Generator Haseł</h2>
+        <label>
+            <input type="checkbox" id="lowercase" checked> Małe litery (a-z)
+        </label><br>
+        <label>
+            <input type="checkbox" id="uppercase"> Duże litery (A-Z)
+        </label><br>
+        <label>
+            <input type="checkbox" id="numbers"> Cyfry (0-9)
+        </label><br>
+        <label>
+            <input type="checkbox" id="special"> Znaki specjalne (!@#$%^&*)
+        </label><br>
+        <label for="length">Długość hasła:</label><br>
+        <input type="number" id="length" min="4" max="20" value="12"> <br>
+        <p id="password"></p> 
+        <button onclick="generatePassword()">Generuj Hasło</button>
+    </div>
+
+    <script>
+        function generatePassword() {
+            const lowercase = document.getElementById('lowercase').checked;
+            const uppercase = document.getElementById('uppercase').checked;
+            const numbers = document.getElementById('numbers').checked;
+            const special = document.getElementById('special').checked;
+            const length = document.getElementById('length').value;
+            
+            let chars = '';
+            if (lowercase) chars += 'abcdefghijklmnopqrstuvwxyz';
+            if (uppercase) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (numbers) chars += '0123456789';
+            if (special) chars += '!@#$%^&*';
+            
+            if (chars === '') {
+                document.getElementById('password').textContent = 'Wybierz przynajmniej jedną opcję';
+                return;
+            }
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('password').textContent = password;
+        }
+    </script>
+</body>
+</html>
