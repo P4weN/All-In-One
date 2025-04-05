@@ -140,6 +140,7 @@
                 return;
             }
 
+            // Wrapper z ramką
             const wrapper = document.createElement("div");
             wrapper.style.backgroundColor = "white";
             wrapper.style.padding = "6px";
@@ -147,6 +148,7 @@
 
             qrContainer.appendChild(wrapper);
 
+            // Generowanie kodu QR
             new QRCode(wrapper, {
                 text: text,
                 width: 200,
@@ -162,17 +164,28 @@
         }
 
         function downloadQRCode() {
-            const img = document.querySelector('#qrcode img') || document.querySelector('#qrcode canvas');
-            if (img) {
-                let url;
-                if (img.tagName.toLowerCase() === 'canvas') {
-                    url = img.toDataURL("image/png");
-                } else {
-                    url = img.src;
-                }
+            const canvas = document.querySelector('#qrcode canvas');
+            if (canvas) {
+                // Dodajemy białą ramkę do obrazu
+                const size = 220; // Nowy rozmiar z ramką
+                const padding = 10;
+                const finalCanvas = document.createElement("canvas");
+                finalCanvas.width = size;
+                finalCanvas.height = size;
+                const ctx = finalCanvas.getContext("2d");
+
+                // Białe tło
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(0, 0, size, size);
+
+                // Wklej kod QR z ramką
+                ctx.drawImage(canvas, padding, padding);
+
+                // Pobieranie pliku z ramką
+                const url = finalCanvas.toDataURL("image/png");
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = "kod_qr.png";
+                a.download = "kod_qr_z_ramką.png";
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
