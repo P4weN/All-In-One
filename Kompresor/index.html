@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kompresor Obrazów</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #0e0e0e;
+            margin: 0;
+            animation: animation2 1s ease 0s 1 normal forwards;
+        }
+        .container {
+            background: #0e0e0e;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 5px solid #bc8400;
+            width: 400px;
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2, label, p {
+            color: #bc8400;
+        }
+        .upload-area {
+            position: relative;
+            border: 3px dashed #bc8400;
+            border-radius: 10px;
+            width: 100%;
+            height: 150px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 10px;
+            color: #bc8400;
+            cursor: pointer;
+            overflow-y: auto;
+        }
+        .upload-area span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            color: #bc8400;
+            pointer-events: none;
+        }
+        .upload-area img {
+            max-width: 100px;
+            max-height: 100px;
+            border: 2px solid #bc8400;
+            border-radius: 5px;
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+        .upload-btn {
+            background: #bc8400;
+            color: #0e0e0e;
+        }
+        .upload-btn:hover {
+            background: #bc8400;
+        }
+        .clear-btn {
+            background: #d9534f;
+            color: white;
+        }
+        .clear-btn:hover {
+            background: #c9302c;
+        }
+        .download-btn {
+            background: #6c757d;
+            color: white;
+            cursor: not-allowed;
+            margin-top: 20px;
+        }
+        .download-btn.active {
+            background: #28a745;
+            cursor: pointer;
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #bc8400;
+            color: #0e0e0e;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: #0e0e0e;
+            color: #bc8400;
+            border: 2px solid #bc8400;
+            transform: scale(1.1);
+        }
+
+        @keyframes animation2 {
+        0% {
+            opacity: 0;
+        }
+    
+        100% {
+            opacity: 1;
+        }
+    }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.location.href='https://p4wen.github.io/All-In-One/'">Wstecz</button>
+
+    <div class="container">
+        <h2>Kompresor Obrazów</h2>
+        <div class="upload-area" id="uploadArea">
+            <span id="uploadText">Upuść pliki Tutaj</span>
+        </div>
+        <input type="file" id="upload" accept="image/*" multiple style="display: none;">
+        <div class="buttons">
+            <button class="upload-btn" onclick="document.getElementById('upload').click();">📤 PRZEŚLIJ PLIKI</button>
+            <button class="clear-btn" onclick="clearFiles();">❌ WYCZYŚĆ</button>
+        </div>
+        <button class="download-btn" id="downloadAll" disabled>⬇️ POBIERZ WSZYSTKO</button>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById("uploadArea");
+        const uploadInput = document.getElementById("upload");
+        const downloadBtn = document.getElementById("downloadAll");
+        const filesArray = [];
+
+        uploadArea.addEventListener("click", () => uploadInput.click());
+        uploadArea.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            uploadArea.style.background = "rgba(211, 148, 0, 0.2)";
+        });
+        uploadArea.addEventListener("dragleave", () => {
+            uploadArea.style.background = "transparent";
+        });
+        uploadArea.addEventListener("drop", (event) => {
+            event.preventDefault();
+            const files = event.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        uploadInput.addEventListener("change", () => {
+            const files = uploadInput.files;
+            handleFiles(files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                uploadArea.innerHTML = "";
+                const uploadText = document.getElementById("uploadText");
+                if (uploadText) {
+                    uploadText.style.display = "none";
+                }
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = document.createElement("img");
+                        img.src = e.target.result;
+                        img.onload = function() {
+                            const canvas = document.createElement("canvas");
+                            const ctx = canvas.getContext("2d");
+                            const maxWidth = 800; 
+                            const scaleFactor = maxWidth / img.width;
+
+                            canvas.width = maxWidth;
+                            canvas.height = img.height * scaleFactor;
+
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                            canvas.toBlob((blob) => {
+                                const compressedFile = new File([blob], file.name, { type: file.type });
+                                filesArray.push(compressedFile); 
+                            }, file.type);
+                        };
+                        uploadArea.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+                downloadBtn.disabled = false;
+                downloadBtn.classList.add("active");
+            }
+        }
+
+        function clearFiles() {
+            uploadInput.value = "";
+            uploadArea.innerHTML = "";
+            const uploadText = document.createElement("span");
+            uploadText.id = "uploadText";
+            uploadText.textContent = "Upuść pliki Tutaj";
+            uploadArea.appendChild(uploadText);
+            filesArray.length = 0;
+            downloadBtn.disabled = true;
+            downloadBtn.classList.remove("active");
+        }
+
+        downloadBtn.addEventListener("click", () => {
+            if (filesArray.length > 0) {
+                filesArray.forEach(file => {
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(file);
+                    link.download = file.name;
+                    link.click();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
